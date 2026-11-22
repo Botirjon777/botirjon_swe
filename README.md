@@ -6,5 +6,6 @@ YouTube BI Code, Telegram Code With Botirjon). Each folder is one video and runs
 | Video | Folder |
 |---|---|
 | The border that spins (pure CSS) | [`spinning-css-border`](spinning-css-border) |
+| 8 checks before you deploy your AI-built app | [`prelaunch-checklist`](prelaunch-checklist) |
 
-Comment **CODE** on a video to get the link.
+Comment the keyword from the video (**CODE**, **SHIP**, ...) to get the link.
