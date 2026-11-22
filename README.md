@@ -9,5 +9,6 @@ YouTube BI Code, Telegram Code With Botirjon). Each folder is one video and runs
 | 8 checks before you deploy your AI-built app | [`prelaunch-checklist`](prelaunch-checklist) |
 | Claude made this video: the whole pipeline | [`ai-video-pipeline`](ai-video-pipeline) |
 | What is a harness? Start with Claude Code | [`what-is-a-harness`](what-is-a-harness) |
+| n8n: inbox to Telegram (urgent) + Google Sheet | [`n8n-inbox-to-telegram`](n8n-inbox-to-telegram) |
 
-Comment the keyword from the video (**CODE**, **SHIP**, **PIPELINE**, **HARNESS**, ...) to get the link.
+Comment the keyword from the video (**CODE**, **SHIP**, **PIPELINE**, **HARNESS**, **FLOW**, ...) to get the link.
