@@ -1,0 +1,111 @@
+{
+  "name": "Inbox to Telegram (urgent) + Google Sheet (the rest)",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": { "item": [{ "mode": "everyX", "value": 5, "unit": "minutes" }] },
+        "filters": {}
+      },
+      "id": "a1b2c3d4-0001-4000-8000-000000000001",
+      "name": "New email (Gmail)",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 300]
+    },
+    {
+      "parameters": {
+        "modelId": { "__rl": true, "value": "gpt-4o-mini", "mode": "list", "cachedResultName": "GPT-4O-MINI" },
+        "messages": {
+          "values": [
+            {
+              "content": "=You sort my email. Reply only with JSON: {\"summary\": \"two short lines\", \"urgent\": true or false}. Urgent = someone needs an answer or action from me today (outage, client deadline, payment problem). Newsletters, receipts and promotions are never urgent.\n\nFrom: {{ $json.From }}\nSubject: {{ $json.Subject }}\nText: {{ $json.snippet }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "id": "a1b2c3d4-0002-4000-8000-000000000002",
+      "name": "AI: summary + urgent?",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "c0ffee00-0000-4000-8000-000000000003",
+              "leftValue": "={{ $json.message.content.urgent }}",
+              "rightValue": "",
+              "operator": { "type": "boolean", "operation": "true", "singleValue": true }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "a1b2c3d4-0003-4000-8000-000000000003",
+      "name": "IF urgent",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [520, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=URGENT from {{ $('New email (Gmail)').item.json.From }}\n{{ $('New email (Gmail)').item.json.Subject }}\n\n{{ $json.message.content.summary }}",
+        "additionalFields": { "appendAttribution": false }
+      },
+      "id": "a1b2c3d4-0004-4000-8000-000000000004",
+      "name": "Telegram: ping me",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [780, 180]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": { "__rl": true, "value": "", "mode": "list" },
+        "sheetName": { "__rl": true, "value": "gid=0", "mode": "list" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $now.toFormat('yyyy-MM-dd HH:mm') }}",
+            "From": "={{ $('New email (Gmail)').item.json.From }}",
+            "Subject": "={{ $('New email (Gmail)').item.json.Subject }}",
+            "Summary": "={{ $json.message.content.summary }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            { "id": "Date", "displayName": "Date", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "From", "displayName": "From", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "Subject", "displayName": "Subject", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "Summary", "displayName": "Summary", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a1b2c3d4-0005-4000-8000-000000000005",
+      "name": "Google Sheet: log the rest",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [780, 420]
+    }
+  ],
+  "connections": {
+    "New email (Gmail)": { "main": [[{ "node": "AI: summary + urgent?", "type": "main", "index": 0 }]] },
+    "AI: summary + urgent?": { "main": [[{ "node": "IF urgent", "type": "main", "index": 0 }]] },
+    "IF urgent": {
+      "main": [
+        [{ "node": "Telegram: ping me", "type": "main", "index": 0 }],
+        [{ "node": "Google Sheet: log the rest", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "pinData": {}
+}
