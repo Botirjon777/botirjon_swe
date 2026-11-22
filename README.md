@@ -8,5 +8,6 @@ YouTube BI Code, Telegram Code With Botirjon). Each folder is one video and runs
 | The border that spins (pure CSS) | [`spinning-css-border`](spinning-css-border) |
 | 8 checks before you deploy your AI-built app | [`prelaunch-checklist`](prelaunch-checklist) |
 | Claude made this video: the whole pipeline | [`ai-video-pipeline`](ai-video-pipeline) |
+| What is a harness? Start with Claude Code | [`what-is-a-harness`](what-is-a-harness) |
 
-Comment the keyword from the video (**CODE**, **SHIP**, **PIPELINE**, ...) to get the link.
+Comment the keyword from the video (**CODE**, **SHIP**, **PIPELINE**, **HARNESS**, ...) to get the link.
